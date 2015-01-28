@@ -37,7 +37,7 @@ namespace klio {
     public:
         typedef boost::shared_ptr<RedisStore> Ptr;
 
-        RedisStore(const std::string& host,
+        RedisStore(const string& host,
                 const unsigned int port,
                 const unsigned int db,
                 const bool auto_commit,
@@ -53,7 +53,7 @@ namespace klio {
             close();
         };
 
-        const std::string host() const {
+        const string host() const {
             return _host;
         };
 
@@ -70,12 +70,12 @@ namespace klio {
         void check_integrity();
         void initialize();
         void dispose();
-        const std::string str();
+        const string str();
 
-        static const std::string DEFAULT_REDIS_HOST;
+        static const string DEFAULT_REDIS_HOST;
         static const unsigned int DEFAULT_REDIS_PORT;
         static const unsigned int DEFAULT_REDIS_DB;
-        static const std::string OK;
+        static const string OK;
 
     protected:
         Transaction::Ptr get_transaction_handler();
@@ -100,53 +100,53 @@ namespace klio {
 
         RedisTransaction::Ptr create_transaction_handler();
 
-        const std::string check_sensor_existence(const Sensor::Ptr sensor, const bool should_exist);
+        const string check_sensor_existence(const Sensor::Ptr sensor, const bool should_exist);
 
         void run_del_readings(const Sensor::Ptr sensor);
 
-        void run_hmset_sensor(const std::string& key, const Sensor::Ptr sensor);
-        const Sensor::Ptr run_hmget_sensor(const std::string& key);
+        void run_hmset_sensor(const string& key, const Sensor::Ptr sensor);
+        const Sensor::Ptr run_hmget_sensor(const string& key);
         void run_hmset_reading(const Sensor::Ptr sensor, const timestamp_t timestamp, const double value);
         void run_hmset_readings(const Sensor::Ptr sensor, const readings_t& readings);
         readings_t_Ptr run_hget_readings(const Sensor::Ptr sensor);
-        void run_hdel_sensor(const std::string& key);
-        const std::vector<reply> run_hkeys(const std::string& key);
-        const std::string run_hget(const std::string& key, const std::string& field);
+        void run_hdel_sensor(const string& key);
+        const std::vector<reply> run_hkeys(const string& key);
+        const string run_hget(const string& key, const string& field);
 
-        void run_sadd(const std::string& key, const std::string& value);
-        const std::vector<reply> run_smembers(const std::string& key);
-        void run_srem(const std::string& key, const std::string& value);
+        void run_sadd(const string& key, const string& value);
+        const std::vector<reply> run_smembers(const string& key);
+        void run_srem(const string& key, const string& value);
 
         void run_select(const unsigned int index);
         void run_flushdb();
 
-        const std::string compose_sensor_key(const Sensor::Ptr sensor);
-        const std::string compose_readings_key(const Sensor::Ptr sensor);
+        const string compose_sensor_key(const Sensor::Ptr sensor);
+        const string compose_readings_key(const Sensor::Ptr sensor);
 
-        std::string _host;
+        string _host;
         unsigned int _port;
         unsigned int _db;
         redis3m::connection::ptr_t _connection;
         RedisTransaction::Ptr _transaction;
 
-        static const std::string SENSORS_KEY;
-        static const std::string SENSOR_KEY;
-        static const std::string READINGS_KEY;
+        static const string SENSORS_KEY;
+        static const string SENSOR_KEY;
+        static const string READINGS_KEY;
 
-        static const std::string SADD;
-        static const std::string SMEMBERS;
-        static const std::string SREM;
+        static const string SADD;
+        static const string SMEMBERS;
+        static const string SREM;
 
-        static const std::string HMSET;
-        static const std::string HMGET;
-        static const std::string HGETALL;
-        static const std::string HGET;
-        static const std::string HDEL;
-        static const std::string HKEYS;
+        static const string HMSET;
+        static const string HMGET;
+        static const string HGETALL;
+        static const string HGET;
+        static const string HDEL;
+        static const string HKEYS;
 
-        static const std::string DEL;
-        static const std::string SELECT;
-        static const std::string FLUSHDB;
+        static const string DEL;
+        static const string SELECT;
+        static const string FLUSHDB;
     };
 };
 

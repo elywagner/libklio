@@ -16,11 +16,11 @@ void RocksDBStore::open() {
 
     if (bfs::exists(_path) && bfs::is_directory(_path) && _db_buffer.empty()) {
 
-        const std::vector<Sensor::uuid_t> uuids = get_sensor_uuids();
+        const vector<Sensor::uuid_t> uuids = get_sensor_uuids();
 
-        for (std::vector<Sensor::uuid_t>::const_iterator uuid = uuids.begin(); uuid != uuids.end(); uuid++) {
+        for (vector<Sensor::uuid_t>::const_iterator uuid = uuids.begin(); uuid != uuids.end(); uuid++) {
 
-            const std::string uuid_str = boost::uuids::to_string(*uuid);
+            const string uuid_str = boost::uuids::to_string(*uuid);
             open_db(false, false, compose_sensor_properties_path(uuid_str));
             open_db(true, false, compose_sensor_readings_path(uuid_str));
         }
@@ -29,7 +29,7 @@ void RocksDBStore::open() {
 
 void RocksDBStore::close() {
 
-    for (std::map<std::string, rocksdb::DB*>::const_iterator it = _db_buffer.begin(); it != _db_buffer.end(); ++it) {
+    for (map<string, rocksdb::DB*>::const_iterator it = _db_buffer.begin(); it != _db_buffer.end(); ++it) {
         delete (*it).second;
     }
     clear_buffers();
@@ -37,10 +37,10 @@ void RocksDBStore::close() {
 
 void RocksDBStore::check_integrity() {
 
-    const std::string path = compose_sensors_path();
+    const string path = compose_sensors_path();
 
     if (!bfs::exists(path)) {
-        std::ostringstream oss;
+        ostringstream oss;
         oss << "The database path is incomplete.";
         throw StoreException(oss.str());
     }
@@ -51,12 +51,12 @@ void RocksDBStore::check_integrity() {
 
         try {
             boost::uuids::uuid uuid;
-            std::stringstream ss;
+            stringstream ss;
             ss << it->path().filename().string();
             ss >> uuid;
 
-        } catch (std::exception e) {
-            std::ostringstream oss;
+        } catch (exception const &e) {
+            ostringstream oss;
             oss << "The database path contains invalid subdirectories.";
             throw StoreException(oss.str());
         }
@@ -76,16 +76,16 @@ void RocksDBStore::dispose() {
     bfs::remove_all(_path);
 }
 
-const std::string RocksDBStore::str() {
+const string RocksDBStore::str() {
 
-    std::ostringstream oss;
+    ostringstream oss;
     oss << "RocksDB database, stored in path " << _path.string();
     return oss.str();
 }
 
 void RocksDBStore::add_sensor_record(const Sensor::Ptr sensor) {
 
-    const std::string uuid = sensor->uuid_string();
+    const string uuid = sensor->uuid_string();
     create_directory(compose_sensor_path(uuid));
     create_directory(compose_sensor_properties_path(uuid));
     create_directory(compose_sensor_readings_path(uuid));
@@ -104,20 +104,20 @@ void RocksDBStore::update_sensor_record(const Sensor::Ptr sensor) {
     put_sensor(false, sensor);
 }
 
-std::vector<Sensor::Ptr> RocksDBStore::get_sensor_records() {
+vector<Sensor::Ptr> RocksDBStore::get_sensor_records() {
 
-    std::vector<Sensor::Ptr> sensors;
+    vector<Sensor::Ptr> sensors;
     const bfs::directory_iterator end;
 
     for (bfs::directory_iterator it(compose_sensors_path()); it != end; it++) {
 
         boost::uuids::uuid uuid;
-        std::stringstream ss;
+        stringstream ss;
         ss << it->path().filename().string();
         ss >> uuid;
 
-        const std::string uuid_str = boost::uuids::to_string(uuid);
-        const std::string db_path = compose_sensor_properties_path(uuid_str);
+        const string uuid_str = boost::uuids::to_string(uuid);
+        const string db_path = compose_sensor_properties_path(uuid_str);
         rocksdb::DB* db = _db_buffer[db_path];
 
         if (db) {
@@ -132,7 +132,7 @@ std::vector<Sensor::Ptr> RocksDBStore::get_sensor_records() {
             sensors.push_back(sensor);
 
         } else {
-            std::ostringstream err;
+            ostringstream err;
             err << "Sensor " << uuid_str << " could not be found.";
             throw StoreException(err.str());
         }
@@ -151,11 +151,11 @@ readings_t_Ptr RocksDBStore::get_all_reading_records(const Sensor::Ptr sensor) {
 
     for (it->SeekToFirst(); it->Valid(); it->Next()) {
 
-        std::string epoch = it->key().ToString();
-        std::string value = it->value().ToString();
+        string epoch = it->key().ToString();
+        string value = it->value().ToString();
 
         readings->insert(
-                std::pair<timestamp_t, double>(
+                pair<timestamp_t, double>(
                 time_converter->convert_from_epoch(atol(epoch.c_str())),
                 atof(value.c_str())
                 ));
@@ -182,7 +182,7 @@ readings_t_Ptr RocksDBStore::get_timeframe_reading_records(const Sensor::Ptr sen
         if (timestamp >= begin && timestamp <= end) {
 
             readings->insert(
-                    std::pair<timestamp_t, double>(
+                    pair<timestamp_t, double>(
                     timestamp,
                     atof(value)
                     ));
@@ -209,7 +209,7 @@ reading_t RocksDBStore::get_last_reading_record(const Sensor::Ptr sensor) {
     const char* epoch = it->key().ToString().c_str();
     const char* value = it->value().ToString().c_str();
 
-    return std::pair<timestamp_t, double>(
+    return pair<timestamp_t, double>(
             time_converter->convert_from_epoch(atol(epoch)),
             atof(value)
             );
@@ -220,7 +220,7 @@ reading_t RocksDBStore::get_reading_record(const Sensor::Ptr sensor, const times
     //FIXME: make this method more efficient
     klio::readings_t_Ptr readings = get_all_readings(sensor);
 
-    std::pair<timestamp_t, double> reading = std::pair<timestamp_t, double>(0, 0);
+    pair<timestamp_t, double> reading = pair<timestamp_t, double>(0, 0);
 
     if (readings->count(timestamp)) {
         reading.first = timestamp;
@@ -235,9 +235,9 @@ void RocksDBStore::add_single_reading_record(const Sensor::Ptr sensor, const tim
             compose_sensor_readings_path(sensor->uuid_string()));
 
     try {
-        put_value(db, std::to_string(timestamp), std::to_string(value));
+        put_value(db, to_string(timestamp), to_string(value));
 
-    } catch (std::exception const& e) {
+    } catch (exception const& e) {
         handle_reading_insertion_error(ignore_errors, timestamp, value);
     }
 }
@@ -251,16 +251,16 @@ void RocksDBStore::add_bulk_reading_records(const Sensor::Ptr sensor, const read
 
     for (readings_cit_t it = readings.begin(); it != readings.end(); ++it) {
         try {
-            batch.Put(std::to_string((*it).first), std::to_string((*it).second));
+            batch.Put(to_string((*it).first), to_string((*it).second));
 
-        } catch (std::exception const& e) {
+        } catch (exception const& e) {
             handle_reading_insertion_error(ignore_errors, (*it).first, (*it).second);
         }
     }
     try {
         write_batch(db, batch);
 
-    } catch (std::exception const& e) {
+    } catch (exception const& e) {
         handle_reading_insertion_error(ignore_errors, sensor);
     }
 }
@@ -277,7 +277,7 @@ void RocksDBStore::clear_buffers() {
     _db_buffer.clear();
 }
 
-rocksdb::DB* RocksDBStore::open_db(const bool create_if_missing, const bool error_if_exists, const std::string& db_path) {
+rocksdb::DB* RocksDBStore::open_db(const bool create_if_missing, const bool error_if_exists, const string& db_path) {
 
     rocksdb::DB* db = _db_buffer[db_path];
 
@@ -299,7 +299,7 @@ rocksdb::DB* RocksDBStore::open_db(const bool create_if_missing, const bool erro
     return db;
 }
 
-void RocksDBStore::close_db(const std::string& db_path) {
+void RocksDBStore::close_db(const string& db_path) {
 
     rocksdb::DB* db = _db_buffer[db_path];
 
@@ -309,7 +309,7 @@ void RocksDBStore::close_db(const std::string& db_path) {
     }
 }
 
-void RocksDBStore::remove_db(const std::string& db_path) {
+void RocksDBStore::remove_db(const string& db_path) {
 
     close_db(db_path);
     bfs::remove_all(db_path);
@@ -327,7 +327,7 @@ void RocksDBStore::put_sensor(const bool create, const Sensor::Ptr sensor) {
     put_value(db, "timezone", sensor->timezone());
 }
 
-void RocksDBStore::put_value(rocksdb::DB* db, const std::string& key, const std::string& value) {
+void RocksDBStore::put_value(rocksdb::DB* db, const string& key, const string& value) {
 
     const rocksdb::Status status = db->Put(_write_options, key, value);
 
@@ -336,11 +336,11 @@ void RocksDBStore::put_value(rocksdb::DB* db, const std::string& key, const std:
     }
 }
 
-std::string RocksDBStore::get_value(rocksdb::DB* db, const std::string& key) {
+string RocksDBStore::get_value(rocksdb::DB* db, const string& key) {
 
     rocksdb::ReadOptions options;
 
-    std::string value;
+    string value;
     const rocksdb::Status status = db->Get(options, key, &value);
 
     if (status.ok()) {
@@ -351,7 +351,7 @@ std::string RocksDBStore::get_value(rocksdb::DB* db, const std::string& key) {
     }
 }
 
-void RocksDBStore::delete_value(rocksdb::DB* db, const std::string& key) {
+void RocksDBStore::delete_value(rocksdb::DB* db, const string& key) {
 
     const rocksdb::Status status = db->Delete(_write_options, key);
 
@@ -369,39 +369,39 @@ void RocksDBStore::write_batch(rocksdb::DB* db, rocksdb::WriteBatch& batch) {
     }
 }
 
-const std::string RocksDBStore::compose_sensors_path() {
+const string RocksDBStore::compose_sensors_path() {
 
-    std::ostringstream str;
+    ostringstream str;
     str << _path.string() << "/sensors";
     return str.str();
 }
 
-const std::string RocksDBStore::compose_sensor_path(const std::string& uuid) {
+const string RocksDBStore::compose_sensor_path(const string& uuid) {
 
-    std::ostringstream str;
+    ostringstream str;
     str << compose_sensors_path() << "/" << uuid;
     return str.str();
 }
 
-const std::string RocksDBStore::compose_sensor_properties_path(const std::string& uuid) {
+const string RocksDBStore::compose_sensor_properties_path(const string& uuid) {
 
-    std::ostringstream str;
+    ostringstream str;
     str << compose_sensor_path(uuid) << "/properties";
     return str.str();
 }
 
-const std::string RocksDBStore::compose_sensor_readings_path(const std::string& uuid) {
+const string RocksDBStore::compose_sensor_readings_path(const string& uuid) {
 
-    std::ostringstream str;
+    ostringstream str;
     str << compose_sensor_path(uuid) << "/readings";
     return str.str();
 }
 
-void RocksDBStore::create_directory(const std::string& dir) {
+void RocksDBStore::create_directory(const string& dir) {
 
     if (!bfs::create_directory(dir)) {
 
-        std::ostringstream str;
+        ostringstream str;
         str << "RocksDB database directory " << dir << " can not be created.";
         throw StoreException(str.str());
     }

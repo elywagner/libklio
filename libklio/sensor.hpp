@@ -28,8 +28,10 @@
 #include <libklio/common.hpp>
 #include <libklio/device-type.hpp>
 
+using namespace std;
+
 namespace klio {
-    const static std::string DEFAULT_SENSOR_DESCRIPTION = "Unknown";
+    const static string DEFAULT_SENSOR_DESCRIPTION = "Unknown";
 
     class Sensor {
     public:
@@ -37,11 +39,11 @@ namespace klio {
         typedef boost::uuids::uuid uuid_t;
 
         Sensor(const uuid_t uuid,
-                const std::string& external_id,
-                const std::string& name,
-                const std::string& description,
-                const std::string& unit,
-                const std::string& timezone,
+                const string& external_id,
+                const string& name,
+                const string& description,
+                const string& unit,
+                const string& timezone,
                 const klio::DeviceType::Ptr device_type) :
         _uuid(uuid),
         _external_id(external_id),
@@ -61,23 +63,23 @@ namespace klio {
             return _uuid;
         };
 
-        const std::string external_id() const {
+        const string external_id() const {
             return _external_id;
         };
 
-        const std::string name() const {
+        const string name() const {
             return _name;
         };
 
-        const std::string description() const {
+        const string description() const {
             return _description;
         };
 
-        const std::string unit() const {
+        const string unit() const {
             return _unit;
         };
 
-        const std::string timezone() const {
+        const string timezone() const {
             return _timezone;
         };
 
@@ -85,23 +87,23 @@ namespace klio {
             return _device_type;
         };
 
-        void external_id(const std::string& external_id) {
+        void external_id(const string& external_id) {
             _external_id = external_id;
         }
 
-        void name(const std::string& name) {
+        void name(const string& name) {
             _name = name;
         }
 
-        void description(const std::string& description) {
+        void description(const string& description) {
             _description = description;
         }
 
-        void unit(const std::string& unit) {
+        void unit(const string& unit) {
             _unit = unit;
         }
 
-        void timezone(const std::string& timezone) {
+        void timezone(const string& timezone) {
             _timezone = timezone;
         }
 
@@ -109,9 +111,9 @@ namespace klio {
             _device_type = device_type;
         }
 
-        const std::string str();
-        const std::string uuid_string() const;
-        const std::string uuid_short() const;
+        const string str();
+        const string uuid_string() const;
+        const string uuid_short() const;
 
         bool operator ==(const Sensor& rhs);
         bool operator !=(const Sensor& rhs);
@@ -121,11 +123,11 @@ namespace klio {
         Sensor& operator =(const Sensor& rhs);
 
         uuid_t _uuid;
-        std::string _external_id;
-        std::string _name;
-        std::string _description;
-        std::string _unit;
-        std::string _timezone;
+        string _external_id;
+        string _name;
+        string _description;
+        string _unit;
+        string _timezone;
         klio::DeviceType::Ptr _device_type;
     };
 };

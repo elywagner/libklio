@@ -38,11 +38,11 @@ namespace klio {
     public:
         typedef boost::shared_ptr<MSGStore> Ptr;
 
-        MSGStore(const std::string& url,
-                const std::string& id,
-                const std::string& key,
-                const std::string& description,
-                const std::string& type) :
+        MSGStore(const string& url,
+                const string& id,
+                const string& key,
+                const string& description,
+                const string& type) :
         Store(true, true, 600, 1, 1000),
         _url(url),
         _id(id),
@@ -56,27 +56,27 @@ namespace klio {
             close();
         };
 
-        const std::string url() const {
+        const string url() const {
             return _url;
         };
 
-        const std::string id() const {
+        const string id() const {
             return _id;
         };
 
-        const std::string key() const {
+        const string key() const {
             return _key;
         };
 
-        const std::string description() const {
+        const string description() const {
             return _description;
         };
 
-        const std::string type() const {
+        const string type() const {
             return _type;
         };
 
-        const std::string activation_code() const {
+        const string activation_code() const {
             return _id.substr(0, 10);
         };
 
@@ -87,11 +87,11 @@ namespace klio {
         void dispose();
         void prepare();
         void flush();
-        const std::string str();
+        const string str();
 
-        static const std::string DEFAULT_MSG_URL;
-        static const std::string DEFAULT_MSG_DESCRIPTION;
-        static const std::string DEFAULT_MSG_TYPE;
+        static const string DEFAULT_MSG_URL;
+        static const string DEFAULT_MSG_DESCRIPTION;
+        static const string DEFAULT_MSG_TYPE;
 
     protected:
         void add_sensor_record(const Sensor::Ptr sensor);
@@ -112,18 +112,18 @@ namespace klio {
         MSGStore(const MSGStore& original);
         MSGStore& operator =(const MSGStore& rhs);
 
-        std::string _url;
-        std::string _id;
-        std::string _key;
-        std::string _description;
-        std::string _type;
+        string _url;
+        string _id;
+        string _key;
+        string _description;
+        string _type;
         timestamp_t _last_heartbeat;
 
         void heartbeat();
 
-        const std::string format_uuid_string(const std::string& meter);
+        const string format_uuid_string(const string& meter);
 
-        Sensor::Ptr parse_sensor(const std::string& uuid_str, const Json::Value& jsensor);
+        Sensor::Ptr parse_sensor(const string& uuid_str, const Json::Value& jsensor);
         std::pair<timestamp_t, double> create_reading_pair(const Json::Value& jpair);
     };
 };

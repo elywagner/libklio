@@ -41,8 +41,8 @@ namespace klio {
                 const bool auto_flush,
                 const timestamp_t flush_timeout,
                 const bool synchronous,
-                const std::map<const std::string, const std::string>& db_options,
-                const std::map<const std::string, const std::string>& read_options) :
+                const map<const string, const string>& db_options,
+                const map<const string, const string>& read_options) :
         Store(true, auto_flush, flush_timeout, 10, 10000),
         _path(path),
         _synchronous(synchronous),
@@ -67,7 +67,7 @@ namespace klio {
         void check_integrity();
         void initialize();
         void dispose();
-        const std::string str();
+        const string str();
 
     protected:
         void add_sensor_record(const Sensor::Ptr sensor);
@@ -77,7 +77,7 @@ namespace klio {
         void add_bulk_reading_records(const Sensor::Ptr sensor, const readings_t& readings, const bool ignore_errors);
         void update_reading_records(const Sensor::Ptr sensor, const readings_t& readings, const bool ignore_errors);
 
-        std::vector<Sensor::Ptr> get_sensor_records();
+        vector<Sensor::Ptr> get_sensor_records();
         readings_t_Ptr get_all_reading_records(const Sensor::Ptr sensor);
         readings_t_Ptr get_timeframe_reading_records(const Sensor::Ptr sensor, const timestamp_t begin, const timestamp_t end);
         unsigned long int get_num_readings_value(const Sensor::Ptr sensor);
@@ -92,28 +92,28 @@ namespace klio {
 
         bfs::path _path;
         bool _synchronous;
-        std::map<const std::string, const std::string> _db_options;
-        std::map<const std::string, const std::string> _read_options;
+        map<const string, const string> _db_options;
+        map<const string, const string> _read_options;
         rocksdb::WriteOptions _write_options;
-        std::map<const std::string, rocksdb::DB*> _db_buffer;
+        map<const string, rocksdb::DB*> _db_buffer;
 
-        rocksdb::DB* open_db(const bool create_if_missing, const bool error_if_exists, const std::string& db_path);
-        void close_db(const std::string& db_path);
-        void remove_db(const std::string& db_path);
+        rocksdb::DB* open_db(const bool create_if_missing, const bool error_if_exists, const string& db_path);
+        void close_db(const string& db_path);
+        void remove_db(const string& db_path);
 
         void put_sensor(const bool create, const Sensor::Ptr sensor);
-        void put_value(rocksdb::DB* db, const std::string& key, const std::string& value);
-        std::string get_value(rocksdb::DB* db, const std::string& key);
-        void delete_value(rocksdb::DB* db, const std::string& key);
+        void put_value(rocksdb::DB* db, const string& key, const string& value);
+        string get_value(rocksdb::DB* db, const string& key);
+        void delete_value(rocksdb::DB* db, const string& key);
         void write_batch(rocksdb::DB* db, rocksdb::WriteBatch& batch);
         Sensor::Ptr load_sensor(const Sensor::uuid_t& uuid);
 
-        const std::string compose_db_path();
-        const std::string compose_sensors_path();
-        const std::string compose_sensor_path(const std::string& uuid);
-        const std::string compose_sensor_properties_path(const std::string& uuid);
-        const std::string compose_sensor_readings_path(const std::string& uuid);
-        void create_directory(const std::string& dir);
+        const string compose_db_path();
+        const string compose_sensors_path();
+        const string compose_sensor_path(const string& uuid);
+        const string compose_sensor_properties_path(const string& uuid);
+        const string compose_sensor_readings_path(const string& uuid);
+        void create_directory(const string& dir);
     };
 };
 

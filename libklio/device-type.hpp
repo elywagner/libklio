@@ -26,6 +26,8 @@
 #include <boost/shared_ptr.hpp>
 #include <libklio/common.hpp>
 
+using namespace std;
+
 namespace klio {
 
     class DeviceType {
@@ -77,8 +79,8 @@ namespace klio {
         const static DeviceType::Ptr EMOS;
         const static DeviceType::Ptr WELL_PUMP;
 
-        static std::map<int, DeviceType::Ptr> get_all();
-        static DeviceType::Ptr get_by_id(const int id);
+        static const map<int, DeviceType::Ptr> get_all();
+        static const DeviceType::Ptr get_by_id(const int id);
 
         virtual ~DeviceType() {
         };
@@ -89,18 +91,18 @@ namespace klio {
             return _id;
         };
 
-        const std::string name() const {
+        const string name() const {
             return _name;
         };
 
-        const std::string str();
+        const string str();
 
         bool operator ==(const DeviceType& d);
         bool operator !=(const DeviceType& d);
 
     private:
 
-        DeviceType(const int id, const std::string& name) :
+        DeviceType(const int id, const string& name) :
         _id(id),
         _name(name) {
         };
@@ -112,14 +114,14 @@ namespace klio {
             _id = id;
         }
 
-        void name(const std::string& name) {
+        void name(const string& name) {
             _name = name;
         }
 
-        static DeviceType::Ptr add_type(const int id, const std::string& name);
+        static const DeviceType::Ptr add_type(const int id, const string& name);
 
         int _id;
-        std::string _name;
+        string _name;
         static std::map<int, DeviceType::Ptr> _all;
     };
 };

@@ -7,29 +7,29 @@
 
 using namespace klio;
 
-const std::string RedisStore::DEFAULT_REDIS_HOST = "redis-server1";
+const string RedisStore::DEFAULT_REDIS_HOST = "redis-server1";
 const unsigned int RedisStore::DEFAULT_REDIS_PORT = 6379;
 const unsigned int RedisStore::DEFAULT_REDIS_DB = 0;
-const std::string RedisStore::OK = "OK";
+const string RedisStore::OK = "OK";
 
-const std::string RedisStore::SENSORS_KEY = "libklio:sensors";
-const std::string RedisStore::SENSOR_KEY = "libklio:sensor:";
-const std::string RedisStore::READINGS_KEY = ":readings";
+const string RedisStore::SENSORS_KEY = "libklio:sensors";
+const string RedisStore::SENSOR_KEY = "libklio:sensor:";
+const string RedisStore::READINGS_KEY = ":readings";
 
-const std::string RedisStore::SADD = "SADD";
-const std::string RedisStore::SMEMBERS = "SMEMBERS";
-const std::string RedisStore::SREM = "SREM";
+const string RedisStore::SADD = "SADD";
+const string RedisStore::SMEMBERS = "SMEMBERS";
+const string RedisStore::SREM = "SREM";
 
-const std::string RedisStore::HMSET = "HMSET";
-const std::string RedisStore::HMGET = "HMGET";
-const std::string RedisStore::HGETALL = "HGETALL";
-const std::string RedisStore::HGET = "HGET";
-const std::string RedisStore::HDEL = "HDEL";
-const std::string RedisStore::HKEYS = "HKEYS";
+const string RedisStore::HMSET = "HMSET";
+const string RedisStore::HMGET = "HMGET";
+const string RedisStore::HGETALL = "HGETALL";
+const string RedisStore::HGET = "HGET";
+const string RedisStore::HDEL = "HDEL";
+const string RedisStore::HKEYS = "HKEYS";
 
-const std::string RedisStore::DEL = "DEL";
-const std::string RedisStore::SELECT = "SELECT";
-const std::string RedisStore::FLUSHDB = "FLUSHDB";
+const string RedisStore::DEL = "DEL";
+const string RedisStore::SELECT = "SELECT";
+const string RedisStore::FLUSHDB = "FLUSHDB";
 
 void RedisStore::open() {
 
@@ -79,7 +79,7 @@ RedisTransaction::Ptr RedisStore::create_transaction_handler() {
     return RedisTransaction::Ptr(new RedisTransaction(_connection));
 }
 
-const std::string RedisStore::str() {
+const string RedisStore::str() {
 
     std::ostringstream oss;
     oss << "Redis store " << _host << ":" << _port << " db:" << _db;
@@ -88,7 +88,7 @@ const std::string RedisStore::str() {
 
 void RedisStore::add_sensor_record(const Sensor::Ptr sensor) {
 
-    const std::string key = check_sensor_existence(sensor, false);
+    const string key = check_sensor_existence(sensor, false);
 
     run_hmset_sensor(key, sensor);
     run_sadd(SENSORS_KEY, key);
@@ -96,7 +96,7 @@ void RedisStore::add_sensor_record(const Sensor::Ptr sensor) {
 
 void RedisStore::remove_sensor_record(const Sensor::Ptr sensor) {
 
-    const std::string key = check_sensor_existence(sensor, true);
+    const string key = check_sensor_existence(sensor, true);
 
     run_hdel_sensor(key);
     run_del_readings(sensor);
@@ -105,7 +105,7 @@ void RedisStore::remove_sensor_record(const Sensor::Ptr sensor) {
 
 void RedisStore::update_sensor_record(const Sensor::Ptr sensor) {
 
-    const std::string key = check_sensor_existence(sensor, true);
+    const string key = check_sensor_existence(sensor, true);
 
     run_hmset_sensor(key, sensor);
 }
@@ -173,7 +173,7 @@ reading_t RedisStore::get_reading_record(const Sensor::Ptr sensor, const timesta
     check_sensor_existence(sensor, true);
 
     std::pair<timestamp_t, double> reading = std::pair<timestamp_t, double>(0, 0);
-    const std::string value = run_hget(compose_readings_key(sensor), std::to_string(timestamp));
+    const string value = run_hget(compose_readings_key(sensor), std::to_string(timestamp));
 
     if (value.length() > 0) {
         reading.first = timestamp;
@@ -211,7 +211,7 @@ void RedisStore::update_reading_records(const Sensor::Ptr sensor, const readings
     add_bulk_reading_records(sensor, readings, ignore_errors);
 }
 
-const std::string RedisStore::check_sensor_existence(const Sensor::Ptr sensor, const bool should_exist) {
+const string RedisStore::check_sensor_existence(const Sensor::Ptr sensor, const bool should_exist) {
 
     //sensor exists
     if (_sensors_buffer.count(sensor->uuid()) > 0) {
@@ -235,7 +235,7 @@ void RedisStore::run_del_readings(const Sensor::Ptr sensor) {
     _connection->run(del);
 }
 
-void RedisStore::run_hmset_sensor(const std::string& key, const Sensor::Ptr sensor) {
+void RedisStore::run_hmset_sensor(const string& key, const Sensor::Ptr sensor) {
 
     _connection->run(command(HMSET)(key)
             ("uuid") (sensor->uuid_string())
@@ -247,7 +247,7 @@ void RedisStore::run_hmset_sensor(const std::string& key, const Sensor::Ptr sens
             );
 }
 
-const Sensor::Ptr RedisStore::run_hmget_sensor(const std::string& key) {
+const Sensor::Ptr RedisStore::run_hmget_sensor(const string& key) {
 
     const std::vector<reply> replies = _connection->run(command(HMGET)(key)
             ("uuid") ("external_id")
@@ -310,7 +310,7 @@ readings_t_Ptr RedisStore::run_hget_readings(const Sensor::Ptr sensor) {
     return readings;
 }
 
-void RedisStore::run_hdel_sensor(const std::string& key) {
+void RedisStore::run_hdel_sensor(const string& key) {
 
     _connection->run(command(HDEL)(key)
             ("uuid") ("external_id")
@@ -319,27 +319,27 @@ void RedisStore::run_hdel_sensor(const std::string& key) {
             );
 }
 
-const std::vector<reply> RedisStore::run_hkeys(const std::string& key) {
+const std::vector<reply> RedisStore::run_hkeys(const string& key) {
 
     return _connection->run(command(HKEYS)(key)).elements();
 }
 
-const std::string RedisStore::run_hget(const std::string& key, const std::string& field) {
+const string RedisStore::run_hget(const string& key, const string& field) {
 
     return _connection->run(command(HGET)(key) (field)).str();
 }
 
-void RedisStore::run_sadd(const std::string& key, const std::string& value) {
+void RedisStore::run_sadd(const string& key, const string& value) {
 
     _connection->run(command(SADD)(key) (value));
 }
 
-const std::vector<reply> RedisStore::run_smembers(const std::string& key) {
+const std::vector<reply> RedisStore::run_smembers(const string& key) {
 
     return _connection->run(command(SMEMBERS)(key)).elements();
 }
 
-void RedisStore::run_srem(const std::string& key, const std::string& value) {
+void RedisStore::run_srem(const string& key, const string& value) {
 
     _connection->run(command(SREM)(key) (value));
 }
@@ -357,14 +357,14 @@ void RedisStore::run_flushdb() {
     _connection->run(command(FLUSHDB));
 }
 
-const std::string RedisStore::compose_sensor_key(const Sensor::Ptr sensor) {
+const string RedisStore::compose_sensor_key(const Sensor::Ptr sensor) {
 
     std::ostringstream oss;
     oss << SENSOR_KEY << sensor->uuid_string();
     return oss.str();
 }
 
-const std::string RedisStore::compose_readings_key(const Sensor::Ptr sensor) {
+const string RedisStore::compose_readings_key(const Sensor::Ptr sensor) {
 
     std::ostringstream oss;
     oss << compose_sensor_key(sensor) << READINGS_KEY;

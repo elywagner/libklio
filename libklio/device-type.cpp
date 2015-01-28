@@ -5,7 +5,7 @@
 
 using namespace klio;
 
-std::map<int, DeviceType::Ptr> DeviceType::_all;
+map<int, DeviceType::Ptr> DeviceType::_all;
 
 const DeviceType::Ptr DeviceType::UNKNOWN_DEVICE = add_type(000, "Unknown Device");
 const DeviceType::Ptr DeviceType::DISABLED_DEVICE = add_type(001, "Disabled Device");
@@ -52,7 +52,7 @@ const DeviceType::Ptr DeviceType::CABLE_RECEIVER = add_type(410, "Cable Receiver
 const DeviceType::Ptr DeviceType::EMOS = add_type(501, "EMOS");
 const DeviceType::Ptr DeviceType::WELL_PUMP = add_type(502, "Well pump");
 
-const std::string DeviceType::str() {
+const string DeviceType::str() {
     std::ostringstream oss;
     oss << _name;
     return oss.str();
@@ -66,11 +66,11 @@ bool DeviceType::operator !=(const DeviceType& d) {
     return not operator==(d);
 }
 
-std::map<int, DeviceType::Ptr> DeviceType::get_all() {
+const map<int, DeviceType::Ptr> DeviceType::get_all() {
     return _all;
 }
 
-DeviceType::Ptr DeviceType::get_by_id(int id) {
+const DeviceType::Ptr DeviceType::get_by_id(int id) {
 
     std::map<int, boost::shared_ptr<klio::DeviceType> >::const_iterator it = _all.find(id);
 
@@ -84,7 +84,7 @@ DeviceType::Ptr DeviceType::get_by_id(int id) {
     }
 }
 
-DeviceType::Ptr DeviceType::add_type(const int id, const std::string& name) {
+const DeviceType::Ptr DeviceType::add_type(const int id, const string& name) {
 
     DeviceType::_all[id] = klio::DeviceType::Ptr(new klio::DeviceType(id, name));
     return DeviceType::_all[id];

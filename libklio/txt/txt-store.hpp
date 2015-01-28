@@ -31,7 +31,7 @@ namespace klio {
     public:
         typedef boost::shared_ptr<TXTStore> Ptr;
 
-        TXTStore(const bfs::path& path, const std::string& separator) :
+        TXTStore(const bfs::path& path, const string& separator) :
         Store(true, true, 0, 10, 10000),
         _path(path),
         _field_separator(separator),
@@ -47,9 +47,9 @@ namespace klio {
         void check_integrity();
         void initialize();
         void dispose();
-        const std::string str();
+        const string str();
 
-        const static std::string DEFAULT_FIELD_SEPARATOR;
+        const static string DEFAULT_FIELD_SEPARATOR;
 
     protected:
         void add_sensor_record(const Sensor::Ptr sensor);
@@ -59,7 +59,7 @@ namespace klio {
         void add_bulk_reading_records(const Sensor::Ptr sensor, const readings_t& readings, const bool ignore_errors);
         void update_reading_records(const Sensor::Ptr sensor, const readings_t& readings, const bool ignore_errors);
 
-        std::vector<Sensor::Ptr> get_sensor_records();
+        vector<Sensor::Ptr> get_sensor_records();
         readings_t_Ptr get_all_reading_records(const Sensor::Ptr sensor);
         readings_t_Ptr get_timeframe_reading_records(const Sensor::Ptr sensor, const timestamp_t begin, const timestamp_t end);
         unsigned long int get_num_readings_value(const Sensor::Ptr sensor);
@@ -70,24 +70,24 @@ namespace klio {
         TXTStore(const TXTStore& original);
         TXTStore& operator =(const TXTStore& rhs);
 
-        const static std::string ENABLED;
-        const static std::string DISABLED;
-        const static std::string NOT_A_NUMBER;
+        const static string ENABLED;
+        const static string DISABLED;
+        const static string NOT_A_NUMBER;
 
-        void save_sensor(std::ofstream& file, const Sensor::Ptr sensor);
-        void save_reading(std::ofstream& file, const timestamp_t& timestamp, const double value);
-        std::vector<std::vector<std::string>> read_records(const std::string& path);
+        void save_sensor(ofstream& file, const Sensor::Ptr sensor);
+        void save_reading(ofstream& file, const timestamp_t& timestamp, const double value);
+        vector<vector<string>> read_records(const string& path);
 
         void check_sensor(const Sensor::Ptr sensor, const bool exists);
-        const std::string compose_db_path();
-        const std::string compose_sensors_path();
-        const std::string compose_sensor_path(const std::string& uuid);
-        const std::string compose_sensor_properties_path(const std::string& uuid);
-        const std::string compose_sensor_readings_path(const std::string& uuid);
-        void create_directory(const std::string& dir);
+        const string compose_db_path();
+        const string compose_sensors_path();
+        const string compose_sensor_path(const string& uuid);
+        const string compose_sensor_properties_path(const string& uuid);
+        const string compose_sensor_readings_path(const string& uuid);
+        void create_directory(const string& dir);
 
         bfs::path _path;
-        std::string _field_separator;
+        string _field_separator;
         const boost::char_separator<char> _token_separator;
     };
 };

@@ -8,10 +8,10 @@
 
 using namespace klio;
 
-const std::string TXTStore::ENABLED = "1";
-const std::string TXTStore::DISABLED = "0";
-const std::string TXTStore::NOT_A_NUMBER = "nan";
-const std::string TXTStore::DEFAULT_FIELD_SEPARATOR = ",";
+const string TXTStore::ENABLED = "1";
+const string TXTStore::DISABLED = "0";
+const string TXTStore::NOT_A_NUMBER = "nan";
+const string TXTStore::DEFAULT_FIELD_SEPARATOR = ",";
 
 void TXTStore::open() {
 }
@@ -21,10 +21,10 @@ void TXTStore::close() {
 
 void TXTStore::check_integrity() {
 
-    const std::string path = compose_sensors_path();
+    const string path = compose_sensors_path();
 
     if (!bfs::exists(path)) {
-        std::ostringstream oss;
+        ostringstream oss;
         oss << "The database path is incomplete.";
         throw StoreException(oss.str());
     }
@@ -35,12 +35,12 @@ void TXTStore::check_integrity() {
 
         try {
             boost::uuids::uuid uuid;
-            std::stringstream ss;
+            stringstream ss;
             ss << it->path().filename().string();
             ss >> uuid;
 
-        } catch (std::exception e) {
-            std::ostringstream oss;
+        } catch (exception const &e) {
+            ostringstream oss;
             oss << "The database path contains invalid subdirectories.";
             throw StoreException(oss.str());
         }
@@ -60,9 +60,9 @@ void TXTStore::dispose() {
     bfs::remove_all(_path);
 }
 
-const std::string TXTStore::str() {
+const string TXTStore::str() {
 
-    std::ostringstream oss;
+    ostringstream oss;
     oss << "CSV database, stored in path " << _path.string();
     return oss.str();
 }
@@ -71,17 +71,17 @@ void TXTStore::add_sensor_record(const Sensor::Ptr sensor) {
 
     check_sensor(sensor, false);
 
-    const std::string uuid = sensor->uuid_string();
+    const string uuid = sensor->uuid_string();
     create_directory(compose_sensor_path(uuid));
 
-    std::ofstream file(compose_sensor_properties_path(uuid),
-            std::ofstream::out | std::ofstream::app);
+    ofstream file(compose_sensor_properties_path(uuid),
+            ofstream::out | ofstream::app);
 
     try {
         save_sensor(file, sensor);
         file.close();
 
-    } catch (const std::exception& e) {
+    } catch (const exception& e) {
         file.close();
         throw StoreException(e.what());
     }
@@ -96,14 +96,14 @@ void TXTStore::update_sensor_record(const Sensor::Ptr sensor) {
 
     check_sensor(sensor, true);
 
-    std::ofstream file(compose_sensor_properties_path(sensor->uuid_string()),
-            std::ofstream::out | std::ofstream::app);
+    ofstream file(compose_sensor_properties_path(sensor->uuid_string()),
+            ofstream::out | ofstream::app);
 
     try {
         save_sensor(file, sensor);
         file.close();
 
-    } catch (const std::exception& e) {
+    } catch (const exception& e) {
         file.close();
         throw StoreException(e.what());
     }
@@ -113,14 +113,14 @@ void TXTStore::add_single_reading_record(const Sensor::Ptr sensor, const timesta
 
     check_sensor(sensor, true);
 
-    std::ofstream file(compose_sensor_readings_path(sensor->uuid_string()),
-            std::ofstream::out | std::ofstream::app);
+    ofstream file(compose_sensor_readings_path(sensor->uuid_string()),
+            ofstream::out | ofstream::app);
 
     try {
         save_reading(file, timestamp, value);
         file.close();
 
-    } catch (std::exception const& e) {
+    } catch (exception const& e) {
         file.close();
         handle_reading_insertion_error(ignore_errors, timestamp, value);
     }
@@ -130,15 +130,15 @@ void TXTStore::add_bulk_reading_records(const Sensor::Ptr sensor, const readings
 
     check_sensor(sensor, true);
 
-    std::ofstream file(compose_sensor_readings_path(sensor->uuid_string()),
-            std::ofstream::out | std::ofstream::app);
+    ofstream file(compose_sensor_readings_path(sensor->uuid_string()),
+            ofstream::out | ofstream::app);
 
     for (readings_cit_t it = readings.begin(); it != readings.end(); ++it) {
 
         try {
             save_reading(file, (*it).first, (*it).second);
 
-        } catch (std::exception const& e) {
+        } catch (exception const& e) {
             handle_reading_insertion_error(ignore_errors, (*it).first, (*it).second);
         }
     }
@@ -148,29 +148,29 @@ void TXTStore::add_bulk_reading_records(const Sensor::Ptr sensor, const readings
 void TXTStore::update_reading_records(const Sensor::Ptr sensor, const readings_t& readings, const bool ignore_errors) {
 
     check_sensor(sensor, true);
-    
-    std::ofstream file(compose_sensor_readings_path(sensor->uuid_string()),
-            std::ofstream::out | std::ofstream::app);
+
+    ofstream file(compose_sensor_readings_path(sensor->uuid_string()),
+            ofstream::out | ofstream::app);
 
     for (readings_cit_t it = readings.begin(); it != readings.end(); ++it) {
 
         try {
             save_reading(file, (*it).first, (*it).second);
 
-        } catch (std::exception const& e) {
+        } catch (exception const& e) {
             handle_reading_insertion_error(ignore_errors, (*it).first, (*it).second);
         }
     }
     file.close();
 }
 
-std::vector<Sensor::Ptr> TXTStore::get_sensor_records() {
+vector<Sensor::Ptr> TXTStore::get_sensor_records() {
 
     //TODO: improve this method
-    std::vector<Sensor::Ptr> sensors;
-    std::vector<std::vector < std::string>> records = read_records(compose_sensors_path());
+    vector<Sensor::Ptr> sensors;
+    vector<vector < string>> records = read_records(compose_sensors_path());
 
-    for (std::vector<std::vector < std::string>>::iterator record = records.begin(); record != records.end(); ++record) {
+    for (vector<vector < string>>::iterator record = records.begin(); record != records.end(); ++record) {
 
         sensors.push_back(sensor_factory->createSensor(
                 (*record).at(1), //uuid,
@@ -187,22 +187,22 @@ std::vector<Sensor::Ptr> TXTStore::get_sensor_records() {
 readings_t_Ptr TXTStore::get_all_reading_records(const Sensor::Ptr sensor) {
 
     check_sensor(sensor, true);
-    
+
     //TODO: improve this method
     readings_t_Ptr readings(new readings_t());
-    std::vector<std::vector < std::string>> records = read_records(compose_sensor_readings_path(sensor->uuid_string()));
+    vector<vector < string>> records = read_records(compose_sensor_readings_path(sensor->uuid_string()));
 
-    for (std::vector<std::vector < std::string>>::iterator record = records.begin(); record != records.end(); ++record) {
+    for (vector<vector < string>>::iterator record = records.begin(); record != records.end(); ++record) {
 
-        std::string value = (*record).at(2);
-        std::transform(value.begin(), value.end(), value.begin(), ::tolower);
+        string value = (*record).at(2);
+        transform(value.begin(), value.end(), value.begin(), ::tolower);
 
-        if (value.find(NOT_A_NUMBER) == std::string::npos) {
+        if (value.find(NOT_A_NUMBER) == string::npos) {
 
             try {
                 timestamp_t timestamp = boost::lexical_cast<timestamp_t>((*record).at(1));
 
-                readings->insert(std::pair<timestamp_t, double>(
+                readings->insert(pair<timestamp_t, double>(
                         time_converter->convert_from_epoch(timestamp),
                         boost::lexical_cast<double>(value)));
 
@@ -220,7 +220,7 @@ readings_t_Ptr TXTStore::get_timeframe_reading_records(const Sensor::Ptr sensor,
     readings_t_Ptr readings(new readings_t());
     readings_t_Ptr all = get_all_reading_records(sensor);
 
-    for (std::map<klio::timestamp_t, double>::iterator it = all->begin(); it != all->end(); ++it) {
+    for (map<klio::timestamp_t, double>::iterator it = all->begin(); it != all->end(); ++it) {
 
         klio::timestamp_t timestamp = (*it).first;
 
@@ -248,16 +248,16 @@ reading_t TXTStore::get_reading_record(const Sensor::Ptr sensor, const timestamp
     //TODO: improve this method
     readings_t_Ptr all = get_all_reading_records(sensor);
 
-    for (std::map<klio::timestamp_t, double>::iterator it = all->begin(); it != all->end(); ++it) {
+    for (map<klio::timestamp_t, double>::iterator it = all->begin(); it != all->end(); ++it) {
 
         if ((*it).first == timestamp) {
             return *it;
         }
     }
-    return std::pair<timestamp_t, double>(0, 0);
+    return pair<timestamp_t, double>(0, 0);
 }
 
-void TXTStore::save_sensor(std::ofstream& file, const Sensor::Ptr sensor) {
+void TXTStore::save_sensor(ofstream& file, const Sensor::Ptr sensor) {
 
     file << ENABLED << _field_separator <<
             sensor->uuid() << _field_separator <<
@@ -265,24 +265,24 @@ void TXTStore::save_sensor(std::ofstream& file, const Sensor::Ptr sensor) {
             sensor->name() << _field_separator <<
             sensor->description() << _field_separator <<
             sensor->unit() << _field_separator <<
-            sensor->timezone() << std::endl;
+            sensor->timezone() << endl;
 }
 
-void TXTStore::save_reading(std::ofstream& file, const timestamp_t& timestamp, const double value) {
+void TXTStore::save_reading(ofstream& file, const timestamp_t& timestamp, const double value) {
 
     file << ENABLED << _field_separator <<
-            std::to_string(timestamp) << _field_separator <<
-            std::to_string(value) << std::endl;
+            to_string(timestamp) << _field_separator <<
+            to_string(value) << endl;
 }
 
-std::vector<std::vector<std::string>> TXTStore::read_records(const std::string& path) {
+vector<vector<string>> TXTStore::read_records(const string& path) {
 
-    std::vector<std::vector < std::string>> records;
-    std::vector<std::string> record;
+    vector<vector < string>> records;
+    vector<string> record;
 
-    std::map<std::string, std::vector < std::string>> lines;
-    std::string line;
-    std::ifstream file(path.c_str());
+    map<string, vector < string>> lines;
+    string line;
+    ifstream file(path.c_str());
 
     try {
         while (getline(file, line)) {
@@ -295,7 +295,7 @@ std::vector<std::vector<std::string>> TXTStore::read_records(const std::string& 
 
                 //Status
                 if (record.at(0) == ENABLED) {
-                    lines.insert(std::pair<std::string, std::vector < std::string >> (record.at(1), record));
+                    lines.insert(pair<string, vector < string >> (record.at(1), record));
 
                 } else {
                     lines.erase(record.at(1));
@@ -304,12 +304,12 @@ std::vector<std::vector<std::string>> TXTStore::read_records(const std::string& 
         }
         file.close();
 
-    } catch (std::exception& e) {
+    } catch (exception const &e) {
         file.close();
         throw StoreException("Invalid CVS file format");
     }
 
-    for (std::map<std::string, std::vector < std::string>>::iterator it = lines.begin(); it != lines.end(); ++it) {
+    for (map<string, vector < string>>::iterator it = lines.begin(); it != lines.end(); ++it) {
         records.push_back(it->second);
     }
     return records;
@@ -317,57 +317,57 @@ std::vector<std::vector<std::string>> TXTStore::read_records(const std::string& 
 
 void TXTStore::check_sensor(const Sensor::Ptr sensor, const bool should_exist) {
 
-    const std::string uuid = sensor->uuid_string();
-    const std::string path = compose_sensor_properties_path(uuid);
+    const string uuid = sensor->uuid_string();
+    const string path = compose_sensor_properties_path(uuid);
 
     if (bfs::exists(path)) {
-        
+
         if (!should_exist) {
-            std::ostringstream oss;
+            ostringstream oss;
             oss << "Sensor " << path << " already exists";
             throw StoreException(oss.str());
         }
 
     } else if (should_exist) {
-        std::ostringstream oss;
+        ostringstream oss;
         oss << "Sensor " << uuid << " not found";
         throw StoreException(oss.str());
     }
 }
 
-const std::string TXTStore::compose_sensors_path() {
+const string TXTStore::compose_sensors_path() {
 
-    std::ostringstream str;
+    ostringstream str;
     str << _path.string() << "/sensors";
     return str.str();
 }
 
-const std::string TXTStore::compose_sensor_path(const std::string& uuid) {
+const string TXTStore::compose_sensor_path(const string& uuid) {
 
-    std::ostringstream str;
+    ostringstream str;
     str << compose_sensors_path() << "/" << uuid;
     return str.str();
 }
 
-const std::string TXTStore::compose_sensor_properties_path(const std::string& uuid) {
+const string TXTStore::compose_sensor_properties_path(const string& uuid) {
 
-    std::ostringstream str;
+    ostringstream str;
     str << compose_sensor_path(uuid) << "/properties.csv";
     return str.str();
 }
 
-const std::string TXTStore::compose_sensor_readings_path(const std::string& uuid) {
+const string TXTStore::compose_sensor_readings_path(const string& uuid) {
 
-    std::ostringstream str;
+    ostringstream str;
     str << compose_sensor_path(uuid) << "/readings.csv";
     return str.str();
 }
 
-void TXTStore::create_directory(const std::string& dir) {
+void TXTStore::create_directory(const string& dir) {
 
     if (!bfs::create_directory(dir)) {
 
-        std::ostringstream str;
+        ostringstream str;
         str << "CSV database directory " << dir << " can not be created.";
         throw StoreException(str.str());
     }

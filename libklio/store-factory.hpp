@@ -39,6 +39,8 @@
 #include <libklio/postgresql/postgresql-store.hpp>
 #endif /* ENABLE_POSTGRESQL */
 
+using namespace std;
+
 namespace bfs = boost::filesystem;
 
 namespace klio {
@@ -65,7 +67,7 @@ namespace klio {
                 const bool auto_flush,
                 const timestamp_t flush_timeout,
                 //Visit: http://www.sqlite.org/pragma.html#pragma_synchronous
-                const std::string& synchronous
+                const string& synchronous
                 );
 
         SQLite3Store::Ptr open_sqlite3_store(const bfs::path& path);
@@ -76,36 +78,36 @@ namespace klio {
                 const bool auto_flush,
                 const timestamp_t flush_timeout,
                 //Visit: http://www.sqlite.org/pragma.html#pragma_synchronous
-                const std::string& synchronous
+                const string& synchronous
                 );
 
         TXTStore::Ptr create_txt_store(const bfs::path& path);
 
-        TXTStore::Ptr create_txt_store(const bfs::path& path, const std::string& field_separator);
+        TXTStore::Ptr create_txt_store(const bfs::path& path, const string& field_separator);
 
         TXTStore::Ptr open_txt_store(const bfs::path& path);
 
-        TXTStore::Ptr open_txt_store(const bfs::path& path, const std::string& field_separator);
+        TXTStore::Ptr open_txt_store(const bfs::path& path, const string& field_separator);
 
 #ifdef ENABLE_MSG
 
         MSGStore::Ptr create_msg_store();
 
-        MSGStore::Ptr create_msg_store(const std::string& id, const std::string& key);
+        MSGStore::Ptr create_msg_store(const string& id, const string& key);
 
-        MSGStore::Ptr create_msg_store(const std::string& url,
-                const std::string& id,
-                const std::string& key,
-                const std::string& description,
-                const std::string& type
+        MSGStore::Ptr create_msg_store(const string& url,
+                const string& id,
+                const string& key,
+                const string& description,
+                const string& type
                 );
 
-        MSGStore::Ptr open_msg_store(const std::string& id, const std::string& key);
+        MSGStore::Ptr open_msg_store(const string& id, const string& key);
 
         MSGStore::Ptr open_msg_store(
-                const std::string& url,
-                const std::string& id,
-                const std::string& key
+                const string& url,
+                const string& id,
+                const string& key
                 );
 
 #endif /* ENABLE_MSG */
@@ -124,8 +126,8 @@ namespace klio {
                 const bool auto_flush,
                 const timestamp_t flush_timeout,
                 const bool synchronous,
-                const std::map<const std::string, const std::string>& db_options,
-                const std::map<const std::string, const std::string>& read_options
+                const std::map<const string, const string>& db_options,
+                const std::map<const string, const string>& read_options
                 );
 
         RocksDBStore::Ptr open_rocksdb_store(const bfs::path& path);
@@ -140,8 +142,8 @@ namespace klio {
                 const bool auto_flush,
                 const timestamp_t flush_timeout,
                 const bool synchronous,
-                const std::map<const std::string, const std::string>& db_options,
-                const std::map<const std::string, const std::string>& read_options
+                const std::map<const string, const string>& db_options,
+                const std::map<const string, const string>& read_options
                 );
 
 #endif /* ENABLE_ROCKSDB */
@@ -151,13 +153,13 @@ namespace klio {
         RedisStore::Ptr create_redis_store();
 
         RedisStore::Ptr create_redis_store(
-                const std::string& host,
+                const string& host,
                 const unsigned int port,
                 const unsigned int db
                 );
 
         RedisStore::Ptr create_redis_store(
-                const std::string& host,
+                const string& host,
                 const unsigned int port,
                 const unsigned int db,
                 const bool auto_commit,
@@ -171,12 +173,12 @@ namespace klio {
 
         PostgreSQLStore::Ptr create_postgresql_store();
 
-        PostgreSQLStore::Ptr create_postgresql_store(const std::string& info);
+        PostgreSQLStore::Ptr create_postgresql_store(const string& info);
 
-        PostgreSQLStore::Ptr create_postgresql_store(const std::string& info, const bool prepare);
+        PostgreSQLStore::Ptr create_postgresql_store(const string& info, const bool prepare);
 
         PostgreSQLStore::Ptr create_postgresql_store(
-                const std::string& info,
+                const string& info,
                 const bool prepare,
                 const bool auto_commit,
                 const bool auto_flush,

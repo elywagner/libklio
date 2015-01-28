@@ -38,7 +38,7 @@ namespace klio {
         typedef boost::shared_ptr<PostgreSQLStore> Ptr;
 
         PostgreSQLStore(
-                const std::string& info,
+                const string& info,
                 const bool auto_commit,
                 const bool auto_flush,
                 const timestamp_t flush_timeout,
@@ -54,7 +54,7 @@ namespace klio {
             close();
         };
 
-        const std::string info() const {
+        const string info() const {
             return _info;
         };
 
@@ -65,9 +65,9 @@ namespace klio {
         void upgrade();
         void prepare();
         void dispose();
-        const std::string str();
+        const string str();
 
-        static const std::string DEFAULT_CONNECTION_INFO;
+        static const string DEFAULT_CONNECTION_INFO;
 
     protected:
         Transaction::Ptr get_transaction_handler();
@@ -112,11 +112,11 @@ namespace klio {
 
         Sensor::Ptr parse_sensor(PGresult* result, const int row);
         reading_t parse_reading(PGresult* result, const int row);
-        std::string get_string_value(PGresult* result, const int row, const int col);
+        string get_string_value(PGresult* result, const int row, const int col);
         unsigned long int get_long_value(PGresult* result, const int row, const int col);
         double get_double_value(PGresult* result, const int row, const int col);
 
-        std::string _info;
+        string _info;
         bool _synchronous;
         PGconn* _connection;
         PostgreSQLTransaction::Ptr _transaction;

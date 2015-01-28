@@ -34,6 +34,7 @@
 #include <libklio/transaction.hpp>
 #include <libklio/sensor-factory.hpp>
 
+using namespace std;
 
 namespace klio {
 
@@ -52,7 +53,7 @@ namespace klio {
         virtual void prepare();
         virtual void flush();
         void flush(bool ignore_errors);
-        virtual const std::string str() = 0;
+        virtual const string str() = 0;
 
         //FIXME: move transactions handling out of this class
         void start_transaction();
@@ -64,10 +65,10 @@ namespace klio {
         void update_sensor(const Sensor::Ptr sensor);
 
         Sensor::Ptr get_sensor(const Sensor::uuid_t& uuid);
-        std::vector<Sensor::Ptr> get_sensors_by_external_id(const std::string& external_id);
-        std::vector<Sensor::Ptr> get_sensors_by_name(const std::string& name);
-        std::vector<Sensor::uuid_t> get_sensor_uuids();
-        std::vector<Sensor::Ptr> get_sensors();
+        vector<Sensor::Ptr> get_sensors_by_external_id(const string& external_id);
+        vector<Sensor::Ptr> get_sensors_by_name(const string& name);
+        vector<Sensor::uuid_t> get_sensor_uuids();
+        vector<Sensor::Ptr> get_sensors();
 
         void add_reading(const Sensor::Ptr sensor, const timestamp_t timestamp, const double value);
         void add_readings(const Sensor::Ptr sensor, const readings_t& readings);
@@ -108,7 +109,7 @@ namespace klio {
         virtual void add_bulk_reading_records(const Sensor::Ptr sensor, const readings_t& readings, const bool ignore_errors) = 0;
         virtual void update_reading_records(const Sensor::Ptr sensor, const readings_t& readings, const bool ignore_errors) = 0;
 
-        virtual std::vector<Sensor::Ptr> get_sensor_records() = 0;
+        virtual vector<Sensor::Ptr> get_sensor_records() = 0;
         virtual readings_t_Ptr get_all_reading_records(const Sensor::Ptr sensor) = 0;
         virtual readings_t_Ptr get_timeframe_reading_records(const Sensor::Ptr sensor, const timestamp_t begin, const timestamp_t end) = 0;
         virtual reading_t get_last_reading_record(const Sensor::Ptr sensor) = 0;
@@ -126,7 +127,7 @@ namespace klio {
 
     private:
         typedef unsigned int cached_operation_type_t;
-        typedef std::pair<const cached_operation_type_t, const readings_t_Ptr> cached_readings_type_t;
+        typedef pair<const cached_operation_type_t, const readings_t_Ptr> cached_readings_type_t;
         typedef boost::unordered_map<const cached_operation_type_t, const readings_t_Ptr> cached_reading_operations_type_t;
         typedef boost::unordered_map<const cached_operation_type_t, const readings_t_Ptr>::const_iterator cached_reading_operations_type_it_t;
         typedef boost::shared_ptr<cached_reading_operations_type_t> cached_reading_operations_type_t_Ptr;
@@ -144,7 +145,7 @@ namespace klio {
         unsigned int _max_bulk_size;
 
         boost::unordered_map<const Sensor::uuid_t, cached_reading_operations_type_t_Ptr> _reading_operations_buffer;
-        boost::unordered_map<const std::string, Sensor::uuid_t> _external_ids_buffer;
+        boost::unordered_map<const string, Sensor::uuid_t> _external_ids_buffer;
 
         void sync_reading_records(const Sensor::Ptr sensor, const Store::Ptr store);
         Sensor::Ptr sync_sensor_record(const Sensor::Ptr sensor);
@@ -156,7 +157,7 @@ namespace klio {
         void flush_all(const bool ignore_errors);
         void flush(const Sensor::Ptr sensor, const bool ignore_errors);
         void clear_buffers(const Sensor::Ptr sensor);
-        void handle_reading_insertion_error(const bool ignore_errors, const std::string message);
+        void handle_reading_insertion_error(const bool ignore_errors, const string message);
     };
 };
 

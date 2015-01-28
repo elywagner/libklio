@@ -14,7 +14,7 @@
 
 using namespace klio;
 
-const std::string PostgreSQLStore::DEFAULT_CONNECTION_INFO = "host=postgresql-server1 port=5432 dbname=kliostore user=kliouser password=12test34";
+const string PostgreSQLStore::DEFAULT_CONNECTION_INFO = "host=postgresql-server1 port=5432 dbname=kliostore user=kliouser password=12test34";
 
 const char* PostgreSQLStore::HAS_TABLE_STMT = "HAS_TABLE";
 const char* PostgreSQLStore::INSERT_SENSOR_STMT = "INSERT_SENSOR";
@@ -155,7 +155,7 @@ const bool PostgreSQLStore::has_table(const char* name) {
     }
 }
 
-const std::string PostgreSQLStore::str() {
+const string PostgreSQLStore::str() {
 
     std::ostringstream oss;
     oss << "PostgreSQL database";
@@ -280,8 +280,8 @@ reading_t PostgreSQLStore::get_reading_record(const Sensor::Ptr sensor, const ti
 
 void PostgreSQLStore::add_single_reading_record(const Sensor::Ptr sensor, const timestamp_t timestamp, const double value, const bool ignore_errors) {
 
-    const std::string timestamp_str = std::to_string(time_converter->convert_to_epoch(timestamp));
-    const std::string value_str = std::to_string(value);
+    const string timestamp_str = std::to_string(time_converter->convert_to_epoch(timestamp));
+    const string value_str = std::to_string(value);
 
     const char* params[3];
     params[0] = sensor->uuid_string().c_str();
@@ -304,7 +304,7 @@ void PostgreSQLStore::add_bulk_reading_records(const Sensor::Ptr sensor, const r
                 time_converter->convert_to_epoch((*it).first) << "," <<
                 (*it).second << std::endl;
     }
-    const std::string buffer = oss.str();
+    const string buffer = oss.str();
     oss.clear();
 
     clear_results();
@@ -336,8 +336,8 @@ void PostgreSQLStore::update_reading_records(const Sensor::Ptr sensor, const rea
 
     for (readings_cit_t it = readings.begin(); it != readings.end(); ++it) {
 
-        const std::string timestamp = std::to_string(time_converter->convert_to_epoch((*it).first));
-        const std::string value = std::to_string((*it).second);
+        const string timestamp = std::to_string(time_converter->convert_to_epoch((*it).first));
+        const string value = std::to_string((*it).second);
 
         params[1] = timestamp.c_str();
         params[2] = value.c_str();
@@ -543,9 +543,9 @@ reading_t PostgreSQLStore::parse_reading(PGresult* result, const int row) {
             );
 }
 
-std::string PostgreSQLStore::get_string_value(PGresult* result, const int row, const int col) {
+string PostgreSQLStore::get_string_value(PGresult* result, const int row, const int col) {
 
-    return std::string(PQgetvalue(result, row, col));
+    return string(PQgetvalue(result, row, col));
 }
 
 unsigned long int PostgreSQLStore::get_long_value(PGresult* result, const int row, const int col) {

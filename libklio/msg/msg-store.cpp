@@ -9,9 +9,9 @@
 
 using namespace klio;
 
-const std::string MSGStore::DEFAULT_MSG_URL = "https://api.mysmartgrid.de:8443";
-const std::string MSGStore::DEFAULT_MSG_DESCRIPTION = "libklio mSG Store";
-const std::string MSGStore::DEFAULT_MSG_TYPE = "libklio";
+const string MSGStore::DEFAULT_MSG_URL = "https://api.mysmartgrid.de:8443";
+const string MSGStore::DEFAULT_MSG_DESCRIPTION = "libklio mSG Store";
+const string MSGStore::DEFAULT_MSG_TYPE = "libklio";
 
 void MSGStore::open() {
     //Nothing is done with the remote store
@@ -33,7 +33,7 @@ void MSGStore::initialize() {
         (*jobject)["description"] = _description;
         (*jobject)["type"] = _type;
 
-        std::string url = libmsg::Webclient::composeDeviceUrl(_url, _id);
+        string url = libmsg::Webclient::composeDeviceUrl(_url, _id);
         libmsg::Webclient::performHttpPost(url, libmsg::Secret::fromKey(_key), jobject);
 
     } catch (libmsg::MemoryException const & e) {
@@ -59,7 +59,7 @@ void MSGStore::initialize() {
 void MSGStore::prepare() {
 
     try {
-        std::string url = libmsg::Webclient::composeDeviceUrl(_url, _id);
+        string url = libmsg::Webclient::composeDeviceUrl(_url, _id);
         libmsg::JsonPtr jobject = libmsg::Webclient::performHttpGet(url, libmsg::Secret::fromKey(_key));
 
         _description = (*jobject)["description"].asString();
@@ -67,7 +67,7 @@ void MSGStore::prepare() {
 
         Json::Value jsensors = (*jobject)["sensors"];
         for (Json::Value::iterator it = jsensors.begin(), end = jsensors.end(); it != end; it++) {
-            std::string meter = (*it)["meter"].asString();
+            string meter = (*it)["meter"].asString();
             set_buffers(parse_sensor(
                     format_uuid_string(meter),
                     *it));
@@ -97,7 +97,7 @@ void MSGStore::dispose() {
 
     //Tries to delete the remote store
     try {
-        std::string url = libmsg::Webclient::composeDeviceUrl(_url, _id);
+        string url = libmsg::Webclient::composeDeviceUrl(_url, _id);
         libmsg::Webclient::performHttpDelete(url, libmsg::Secret::fromKey(_key));
 
     } catch (libmsg::GenericException const& e) {
@@ -114,7 +114,7 @@ void MSGStore::flush() {
     Store::flush();
 }
 
-const std::string MSGStore::str() {
+const string MSGStore::str() {
 
     std::ostringstream oss;
     oss << "mSG store " << libmsg::Webclient::composeDeviceUrl(_url, _id);
@@ -129,7 +129,7 @@ void MSGStore::add_sensor_record(const Sensor::Ptr sensor) {
 void MSGStore::remove_sensor_record(const Sensor::Ptr sensor) {
 
     try {
-        std::string url = libmsg::Webclient::composeSensorUrl(_url, sensor->uuid_short());
+        string url = libmsg::Webclient::composeSensorUrl(_url, sensor->uuid_short());
         libmsg::Webclient::performHttpDelete(url, libmsg::Secret::fromKey(_key));
 
     } catch (libmsg::MemoryException const & e) {
@@ -165,7 +165,7 @@ void MSGStore::update_sensor_record(const Sensor::Ptr sensor) {
         libmsg::JsonPtr jobject(new Json::Value(Json::objectValue));
         (*jobject)["config"] = jconfig;
 
-        std::string url = libmsg::Webclient::composeSensorUrl(_url, sensor->uuid_short());
+        string url = libmsg::Webclient::composeSensorUrl(_url, sensor->uuid_short());
         libmsg::Webclient::performHttpPost(url, libmsg::Secret::fromKey(_key), jobject);
 
     } catch (libmsg::MemoryException const & e) {
@@ -202,7 +202,7 @@ void MSGStore::add_single_reading_record(const Sensor::Ptr sensor, const timesta
         libmsg::JsonPtr jobject(new Json::Value(Json::objectValue));
         (*jobject)["measurements"] = jmeasurements;
 
-        std::string url = libmsg::Webclient::composeSensorUrl(_url, sensor->uuid_short());
+        string url = libmsg::Webclient::composeSensorUrl(_url, sensor->uuid_short());
         libmsg::Webclient::performHttpPost(url, libmsg::Secret::fromKey(_key), jobject);
 
     } catch (libmsg::GenericException const& e) {
@@ -233,7 +233,7 @@ void MSGStore::add_bulk_reading_records(const Sensor::Ptr sensor, const readings
         libmsg::JsonPtr jobject(new Json::Value(Json::objectValue));
         (*jobject)["measurements"] = jmeasurements;
 
-        std::string url = libmsg::Webclient::composeSensorUrl(_url, sensor->uuid_short());
+        string url = libmsg::Webclient::composeSensorUrl(_url, sensor->uuid_short());
         libmsg::Webclient::performHttpPost(url, libmsg::Secret::fromKey(_key), jobject);
 
     } catch (libmsg::GenericException const& e) {
@@ -252,14 +252,14 @@ void MSGStore::update_reading_records(const Sensor::Ptr sensor, const readings_t
 std::vector<Sensor::Ptr> MSGStore::get_sensor_records() {
 
     try {
-        std::string url = libmsg::Webclient::composeDeviceUrl(_url, _id);
+        string url = libmsg::Webclient::composeDeviceUrl(_url, _id);
         libmsg::JsonPtr jobject = libmsg::Webclient::performHttpGet(url, libmsg::Secret::fromKey(_key));
 
         std::vector<Sensor::Ptr> sensors;
         Json::Value jsensors = (*jobject)["sensors"];
 
         for (Json::Value::iterator it = jsensors.begin(), end = jsensors.end(); it != end; it++) {
-            std::string meter = (*it)["meter"].asString();
+            string meter = (*it)["meter"].asString();
             sensors.push_back(parse_sensor(
                     format_uuid_string(meter),
                     *it));
@@ -363,7 +363,7 @@ void MSGStore::heartbeat() {
         //Send a heartbeat every 30 minutes
         if (now - _last_heartbeat > 1800) {
 
-            std::string url = libmsg::Webclient::composeDeviceUrl(_url, _id);
+            string url = libmsg::Webclient::composeDeviceUrl(_url, _id);
             libmsg::Webclient::performHttpPost(url, libmsg::Secret::fromKey(_key), libmsg::JsonPtr(new Json::Value()));
 
             _last_heartbeat = now;
@@ -389,9 +389,9 @@ void MSGStore::heartbeat() {
     }
 }
 
-const std::string MSGStore::format_uuid_string(const std::string & meter) {
+const string MSGStore::format_uuid_string(const string & meter) {
 
-    std::stringstream oss;
+    stringstream oss;
     for (size_t i = 0; i < meter.length(); i++) {
         if (i == 8 || i == 12 || i == 16 || i == 20) {
             oss << '-';
@@ -401,7 +401,7 @@ const std::string MSGStore::format_uuid_string(const std::string & meter) {
     return oss.str();
 }
 
-Sensor::Ptr MSGStore::parse_sensor(const std::string& uuid_str, const Json::Value& jsensor) {
+Sensor::Ptr MSGStore::parse_sensor(const string& uuid_str, const Json::Value& jsensor) {
 
     Json::Value jname = jsensor["function"];
     Json::Value jdescription = jsensor["description"];
@@ -409,7 +409,7 @@ Sensor::Ptr MSGStore::parse_sensor(const std::string& uuid_str, const Json::Valu
     Json::Value junit = jsensor["unit"];
 
     //TODO: there should be no hard coded default timezone
-    std::string timezone = "Europe/Berlin";
+    string timezone = "Europe/Berlin";
 
     return sensor_factory->createSensor(
             uuid_str,

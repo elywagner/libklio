@@ -2,12 +2,13 @@
 #include <libklio/sqlite3/sqlite3-transaction.hpp>
 
 
+using namespace std;
 using namespace klio;
 
 void SQLite3Transaction::start() {
 
     if (_db == NULL) {
-        std::ostringstream oss;
+        ostringstream oss;
         oss << "Database is not open.";
         throw StoreException(oss.str());
 

@@ -7,19 +7,19 @@
 using namespace klio;
 using namespace boost::uuids;
 
-const std::string Sensor::uuid_string() const {
+const string Sensor::uuid_string() const {
     return to_string(_uuid);
 }
 
-const std::string Sensor::str() {
-    std::ostringstream oss;
+const string Sensor::str() {
+    ostringstream oss;
     oss << _name << "(" << to_string(_uuid) << "), unit: "
             << _unit << ", tz: " << _timezone << ", description: " << _description
             << ", device type: " << _device_type->name();
     return oss.str();
 }
 
-const std::string Sensor::uuid_short() const {
+const string Sensor::uuid_short() const {
 
     return boost::algorithm::erase_all_copy(uuid_string(), "-");
 }

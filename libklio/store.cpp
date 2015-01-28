@@ -35,7 +35,7 @@ void Store::rollback_transaction() {
 void Store::check_out_commit_off() {
 
     if (_auto_commit) {
-        std::ostringstream oss;
+        ostringstream oss;
         oss << "This operation can not be performed because the store is configured to perform commits automatically.";
         throw StoreException(oss.str());
     }
@@ -57,7 +57,7 @@ Transaction::Ptr Store::auto_start_transaction() {
             transaction->start();
 
         } else if (!transaction->pending()) {
-            std::ostringstream oss;
+            ostringstream oss;
             oss << "Automatic commits are disabled for this store. Please, start a transaction manually before invoking this method.";
             throw StoreException(oss.str());
         }
@@ -159,7 +159,7 @@ Sensor::Ptr Store::get_sensor(const Sensor::uuid_t& uuid) {
     boost::unordered_map<const Sensor::uuid_t, Sensor::Ptr>::const_iterator found = _sensors_buffer.find(uuid);
 
     if (found == _sensors_buffer.end()) {
-        std::ostringstream err;
+        ostringstream err;
         err << "Sensor " << boost::uuids::to_string(uuid) << " could not be found.";
         throw StoreException(err.str());
     } else {
@@ -167,18 +167,18 @@ Sensor::Ptr Store::get_sensor(const Sensor::uuid_t& uuid) {
     }
 }
 
-std::vector<Sensor::Ptr> Store::get_sensors() {
+vector<Sensor::Ptr> Store::get_sensors() {
 
     LOG("Getting all sensors");
 
     return get_sensor_records();
 }
 
-std::vector<Sensor::Ptr> Store::get_sensors_by_external_id(const std::string& external_id) {
+vector<Sensor::Ptr> Store::get_sensors_by_external_id(const string& external_id) {
 
     LOG("Getting sensors by external id");
 
-    std::vector<Sensor::Ptr> sensors;
+    vector<Sensor::Ptr> sensors;
 
     if (_external_ids_buffer.count(external_id) > 0) {
         Sensor::uuid_t uuid = _external_ids_buffer[external_id];
@@ -187,11 +187,11 @@ std::vector<Sensor::Ptr> Store::get_sensors_by_external_id(const std::string& ex
     return sensors;
 }
 
-std::vector<Sensor::Ptr> Store::get_sensors_by_name(const std::string& name) {
+vector<Sensor::Ptr> Store::get_sensors_by_name(const string& name) {
 
     LOG("Getting sensors by name");
 
-    std::vector<Sensor::Ptr> sensors;
+    vector<Sensor::Ptr> sensors;
 
     for (boost::unordered_map<Sensor::uuid_t, Sensor::Ptr>::const_iterator it = _sensors_buffer.begin(); it != _sensors_buffer.end(); ++it) {
 
@@ -204,11 +204,11 @@ std::vector<Sensor::Ptr> Store::get_sensors_by_name(const std::string& name) {
     return sensors;
 }
 
-std::vector<Sensor::uuid_t> Store::get_sensor_uuids() {
+vector<Sensor::uuid_t> Store::get_sensor_uuids() {
 
     LOG("Getting sensor UUIDs");
 
-    std::vector<Sensor::uuid_t> uuids;
+    vector<Sensor::uuid_t> uuids;
 
     for (boost::unordered_map<Sensor::uuid_t, Sensor::Ptr>::const_iterator it = _sensors_buffer.begin(); it != _sensors_buffer.end(); ++it) {
         uuids.push_back((*it).first);
@@ -265,10 +265,10 @@ void Store::sync(const Store::Ptr store) {
 
     LOG("Synchronizing this store with store " << store->str());
 
-    const std::vector<Sensor::Ptr> sensors = store->get_sensors();
+    const vector<Sensor::Ptr> sensors = store->get_sensors();
     const Transaction::Ptr transaction = auto_start_transaction();
 
-    for (std::vector<Sensor::Ptr>::const_iterator sensor = sensors.begin(); sensor != sensors.end(); ++sensor) {
+    for (vector<Sensor::Ptr>::const_iterator sensor = sensors.begin(); sensor != sensors.end(); ++sensor) {
         sync_reading_records(*sensor, store);
     }
     auto_commit_transaction(transaction);
@@ -287,10 +287,10 @@ void Store::sync_sensors(const Store::Ptr store) {
 
     LOG("Synchronizing this store sensors with the sensors of store " << store->str());
 
-    const std::vector<Sensor::Ptr> sensors = store->get_sensors();
+    const vector<Sensor::Ptr> sensors = store->get_sensors();
     const Transaction::Ptr transaction = auto_start_transaction();
 
-    for (std::vector<Sensor::Ptr>::const_iterator sensor = sensors.begin(); sensor != sensors.end(); ++sensor) {
+    for (vector<Sensor::Ptr>::const_iterator sensor = sensors.begin(); sensor != sensors.end(); ++sensor) {
 
         set_buffers(sync_sensor_record(*sensor));
     }
@@ -342,8 +342,8 @@ Sensor::Ptr Store::sync_sensor_record(const Sensor::Ptr sensor) {
 
 void Store::prepare() {
 
-    std::vector<Sensor::Ptr> sensors = get_sensor_records();
-    for (std::vector<Sensor::Ptr>::const_iterator sensor = sensors.begin(); sensor != sensors.end(); ++sensor) {
+    vector<Sensor::Ptr> sensors = get_sensor_records();
+    for (vector<Sensor::Ptr>::const_iterator sensor = sensors.begin(); sensor != sensors.end(); ++sensor) {
         set_buffers(*sensor);
     }
 }
@@ -386,7 +386,7 @@ void Store::flush(const Sensor::Ptr sensor, bool ignore_errors) {
             _reading_operations_buffer.find(sensor->uuid());
 
     if (found == _reading_operations_buffer.end()) {
-        std::ostringstream err;
+        ostringstream err;
         err << "Sensor " << sensor->uuid_string() << " could not be found.";
         throw StoreException(err.str());
     }
@@ -467,19 +467,19 @@ void Store::clear_buffers() {
 
 void Store::handle_reading_insertion_error(const bool ignore_errors, const timestamp_t timestamp, const double value) {
 
-    std::ostringstream oss;
+    ostringstream oss;
     oss << "Error adding reading: (" << timestamp << ", " << value << ")";
     handle_reading_insertion_error(ignore_errors, oss.str());
 }
 
 void Store::handle_reading_insertion_error(const bool ignore_errors, const Sensor::Ptr sensor) {
 
-    std::ostringstream oss;
+    ostringstream oss;
     oss << "Error adding readings for sensor: " << sensor->uuid_string();
     handle_reading_insertion_error(ignore_errors, oss.str());
 }
 
-void Store::handle_reading_insertion_error(const bool ignore_errors, const std::string message) {
+void Store::handle_reading_insertion_error(const bool ignore_errors, const string message) {
 
     if (ignore_errors) {
         LOG(message);

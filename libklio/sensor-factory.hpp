@@ -27,6 +27,8 @@
 #include <libklio/sensor.hpp>
 #include <libklio/device-type.hpp>
 
+using namespace std;
+
 namespace klio {
 
     class SensorFactory {
@@ -37,72 +39,72 @@ namespace klio {
         };
 
         Sensor::Ptr createSensor(
-                const std::string& external_id,
-                const std::string& name,
-                const std::string& unit,
-                const std::string& timezone
+                const string& external_id,
+                const string& name,
+                const string& unit,
+                const string& timezone
                 );
 
         Sensor::Ptr createSensor(
-                const std::string& external_id,
-                const std::string& name,
-                const std::string& unit,
-                const std::string& timezone,
+                const string& external_id,
+                const string& name,
+                const string& unit,
+                const string& timezone,
                 const DeviceType::Ptr device_type
                 );
 
         Sensor::Ptr createSensor(
-                const std::string& external_id,
-                const std::string& name,
-                const std::string& description,
-                const std::string& unit,
-                const std::string& timezone,
+                const string& external_id,
+                const string& name,
+                const string& description,
+                const string& unit,
+                const string& timezone,
                 const DeviceType::Ptr device_type
                 );
 
         Sensor::Ptr createSensor(
-                const std::string& uuid_string,
-                const std::string& external_id,
-                const std::string& name,
-                const std::string& unit,
-                const std::string& timezone
+                const string& uuid_string,
+                const string& external_id,
+                const string& name,
+                const string& unit,
+                const string& timezone
                 );
 
         Sensor::Ptr createSensor(
-                const std::string& uuid_string,
-                const std::string& external_id,
-                const std::string& name,
-                const std::string& description,
-                const std::string& unit,
-                const std::string& timezone
+                const string& uuid_string,
+                const string& external_id,
+                const string& name,
+                const string& description,
+                const string& unit,
+                const string& timezone
                 );
 
         Sensor::Ptr createSensor(
-                const std::string& uuid_string,
-                const std::string& external_id,
-                const std::string& name,
-                const std::string& description,
-                const std::string& unit,
-                const std::string& timezone,
+                const string& uuid_string,
+                const string& external_id,
+                const string& name,
+                const string& description,
+                const string& unit,
+                const string& timezone,
                 const DeviceType::Ptr device_type
                 );
 
         Sensor::Ptr createSensor(
                 const Sensor::uuid_t& uuid,
-                const std::string& external_id,
-                const std::string& name,
-                const std::string& description,
-                const std::string& unit,
-                const std::string& timezone
+                const string& external_id,
+                const string& name,
+                const string& description,
+                const string& unit,
+                const string& timezone
                 );
 
         Sensor::Ptr createSensor(
                 const Sensor::uuid_t& uuid,
-                const std::string& external_id,
-                const std::string& name,
-                const std::string& description,
-                const std::string& unit,
-                const std::string& timezone,
+                const string& external_id,
+                const string& name,
+                const string& description,
+                const string& unit,
+                const string& timezone,
                 const DeviceType::Ptr device_type
                 );
 
