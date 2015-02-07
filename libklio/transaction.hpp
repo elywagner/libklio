@@ -54,7 +54,6 @@ namespace klio {
 
     private:
         Transaction(const Transaction& original);
-        Transaction& operator=(const Transaction& rhs);
     };
 };
 

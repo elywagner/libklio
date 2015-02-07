@@ -43,7 +43,6 @@ namespace klio {
 
     private:
         JSONExporter(const JSONExporter& original);
-        JSONExporter& operator=(const JSONExporter& rhs);
     };
 }
 

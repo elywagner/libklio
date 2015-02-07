@@ -49,7 +49,6 @@ namespace klio {
 
     private:
         PostgreSQLTransaction(const PostgreSQLTransaction& original);
-        PostgreSQLTransaction& operator=(const PostgreSQLTransaction& rhs);
 
         PGconn* _connection;
     };

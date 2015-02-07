@@ -60,7 +60,6 @@ namespace klio {
 
     private:
         LocalTime(const LocalTime& original);
-        LocalTime& operator=(const LocalTime& rhs);
 
         tz_database _tz_db;
     };

@@ -48,7 +48,6 @@ namespace klio {
 
     private:
         Exporter(const Exporter& original);
-        Exporter& operator=(const Exporter& rhs);
     };
 };
 

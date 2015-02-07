@@ -133,7 +133,6 @@ namespace klio {
         typedef boost::shared_ptr<cached_reading_operations_type_t> cached_reading_operations_type_t_Ptr;
 
         Store(const Store& original);
-        Store& operator=(const Store& rhs);
 
         static const cached_operation_type_t INSERT_OPERATION;
         static const cached_operation_type_t UPDATE_OPERATION;

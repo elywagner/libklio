@@ -41,7 +41,6 @@ namespace klio {
 
     private:
         CSVImporter(const CSVImporter& original);
-        CSVImporter& operator=(const CSVImporter& rhs);
     };
 }
 

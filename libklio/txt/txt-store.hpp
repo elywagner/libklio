@@ -68,7 +68,6 @@ namespace klio {
 
     private:
         TXTStore(const TXTStore& original);
-        TXTStore& operator =(const TXTStore& rhs);
 
         const static string ENABLED;
         const static string DISABLED;

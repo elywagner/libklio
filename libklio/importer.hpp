@@ -47,7 +47,6 @@ namespace klio {
 
     private:
         Importer(const Importer& original);
-        Importer& operator=(const Importer& rhs);
     };
 };
 

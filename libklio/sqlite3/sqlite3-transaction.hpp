@@ -50,7 +50,6 @@ namespace klio {
 
     private:
         SQLite3Transaction(const SQLite3Transaction& original);
-        SQLite3Transaction& operator=(const SQLite3Transaction& rhs);
 
         sqlite3* _db;
     };

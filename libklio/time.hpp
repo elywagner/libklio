@@ -47,7 +47,6 @@ namespace klio {
 
     private:
         TimeConverter(const TimeConverter& original);
-        TimeConverter& operator=(const TimeConverter& rhs);
     };
 };
 

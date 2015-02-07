@@ -24,10 +24,10 @@ const string Sensor::uuid_short() const {
     return boost::algorithm::erase_all_copy(uuid_string(), "-");
 }
 
-bool Sensor::operator ==(const Sensor& rhs) {
-    return _uuid == rhs.uuid() && _name == rhs.name() && _unit == rhs.unit() && _timezone == rhs.timezone() && _device_type == rhs.device_type();
+bool Sensor::operator ==(const Sensor& sensor) {
+    return _uuid == sensor.uuid() && _name == sensor.name() && _unit == sensor.unit() && _timezone == sensor.timezone() && _device_type == sensor.device_type();
 }
 
-bool Sensor::operator !=(const Sensor& rhs) {
-    return not operator==(rhs);
+bool Sensor::operator !=(const Sensor& sensor) {
+    return not operator==(sensor);
 }

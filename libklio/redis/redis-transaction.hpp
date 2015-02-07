@@ -47,7 +47,6 @@ namespace klio {
 
     private:
         RedisTransaction(const RedisTransaction& original);
-        RedisTransaction& operator=(const RedisTransaction& rhs);
 
         const bool run(const std::string& command);
 
